@@ -8,4 +8,5 @@ FROM jbarlow83/ocrmypdf:latest
 COPY --from=builder /go/bin/main /app/
 WORKDIR /app
 VOLUME /in /out
-CMD ["./main"]
+ENTRYPOINT ["/app/main"]
+# ENTRYPOINT ["sh", "-c", "ls -l /app"]
