@@ -105,8 +105,8 @@ func (c *Context) processDocument(path string) {
 		target = target + "/"
 	}
 	target = target + filename
-	runArgs := fmt.Sprintf(`%s "%s" "%s"`, c.Parameter, path, target)
-	log.Printf("Run command >%s<\n", runArgs)
+	runArgs := fmt.Sprintf(`%s '%s' '%s'`, c.Parameter, path, target)
+	log.Printf("Run command >%s %s<\n", c.OCRMyPDFBinary, runArgs)
 	cmd := exec.Command(c.OCRMyPDFBinary, runArgs)
 
 	var out bytes.Buffer
