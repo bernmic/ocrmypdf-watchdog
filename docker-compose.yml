@@ -11,7 +11,7 @@ services:
       WATCHDOG_FREQUENCY: 5
       WATCHDOG_EXTENSIONS: pdf,jpg,jpeg,tif,tiff,png,gif
       OCRMYPDF_BINARY: ocrmypdf
-      OCRMYPDF_PARAMETER: -l eng+fra+deu --rotate-pages --deskew --jobs 4 --output-type pdfa -v
+      OCRMYPDF_PARAMETER: -l eng+fra+deu --rotate-pages --deskew --jobs 4 --output-type pdfa
     volumes:
     - /home/bernmic/ocrmypdf/in:/in
     - /home/bernmic/ocrmypdf/out:/out
