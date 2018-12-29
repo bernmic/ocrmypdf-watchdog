@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -107,7 +108,17 @@ func (c *Context) processDocument(path string) {
 	runArgs := fmt.Sprintf(`%s "%s" "%s"`, c.Parameter, path, target)
 	log.Printf("Run command >%s<\n", runArgs)
 	cmd := exec.Command(c.OCRMyPDFBinary, runArgs)
+
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	var ser bytes.Buffer
+	cmd.Stderr = &ser
+
 	err = cmd.Run()
+
+	log.Println(out.String())
+	log.Println(ser.String())
+
 	log.Printf("Job finished with result %v\n", err)
 	if err := os.Remove(path); err != nil {
 		log.Printf("Error removing path %s: %v", path, err)
