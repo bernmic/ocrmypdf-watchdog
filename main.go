@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -104,9 +103,10 @@ func (c *Context) processDocument(path string) {
 		target = target + "/"
 	}
 	target = target + filename
-	runArgs := fmt.Sprintf(`%s %s %s`, c.Parameter, path, target)
-	log.Printf("Run command >%s %s<\n", c.OCRMyPDFBinary, runArgs)
-	cmd := exec.Command(c.OCRMyPDFBinary, runArgs)
+	log.Printf("Run command >%s %s %s %s<\n", c.OCRMyPDFBinary, c.Parameter, path, target)
+	runargs := strings.Split(c.Parameter, " ")
+	runargs = append(runargs, path, target)
+	cmd := exec.Command(c.OCRMyPDFBinary, runargs...)
 
 	out, err := cmd.CombinedOutput()
 
