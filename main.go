@@ -98,6 +98,10 @@ func (c *Context) processDocument(path string) {
 	}
 	f.Close()
 	filename := filepath.Base(path)
+	// remove extension and replace with pdf
+	extension := filepath.Ext(filename)
+	filename = filename[0:len(filename)-len(extension)] + ".pdf"
+
 	target := c.OutFolder
 	if !strings.HasSuffix(target, "/") {
 		target = target + "/"

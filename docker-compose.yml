@@ -3,7 +3,8 @@ services:
   ocrmypdf-watchdog:
     container_name: OCRmyPDF
     network_mode: none
-    image: ocrmypdf-watchdog:latest
+    # image: ocrmypdf-watchdog:latest
+    build: '.'
     restart: always
     environment:
       OCRMYPDF_IN: /in
