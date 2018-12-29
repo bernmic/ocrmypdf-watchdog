@@ -52,7 +52,7 @@ func main() {
 	if context.Extensions == "" {
 		context.Extensions = "pdf,tif,tiff,jpg,jpeg,png,gif"
 	}
-	log.Println("Watchdog startet with:")
+	log.Println("Watchdog started with:")
 	log.Println("in = " + context.InFolder)
 	log.Println("out = " + context.OutFolder)
 	log.Printf("Frequency = %d seconds\n", context.Frequency)
