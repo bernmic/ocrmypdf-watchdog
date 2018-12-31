@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -90,26 +91,35 @@ func (c *Context) watchdog() {
 
 func (c *Context) processDocument(path string) {
 	log.Println("Processing file " + path)
-	// check if path is not open by another process
-	f, err := os.OpenFile(path, os.O_RDONLY|os.O_EXCL, 0)
+	// first get the parts of the path: dir+filename+ext
+	directory := filepath.Dir(path)
+	filename := filepath.Base(path)
+	extension := filepath.Ext(filename)
+	filename = filename[0 : len(filename)-len(extension)]
+	// try to rename file
+	tmpFile, err := ioutil.TempFile(directory, filename+".*."+extension)
 	if err != nil {
-		log.Printf("File %s not ready. Stop here.", path)
+		log.Printf("Unable to create temp file: %v", err)
 		return
 	}
-	f.Close()
-	filename := filepath.Base(path)
-	// remove extension and replace with pdf
-	extension := filepath.Ext(filename)
-	filename = filename[0:len(filename)-len(extension)] + ".pdf"
+	tmpFile.Close()
+	os.Remove(tmpFile.Name())
+	err = os.Rename(path, tmpFile.Name())
+	if err != nil {
+		log.Printf("Cannot rename file. Stopping here: %v", err)
+		return
+	}
+	defer os.Remove(tmpFile.Name())
 
 	target := c.OutFolder
 	if !strings.HasSuffix(target, "/") {
 		target = target + "/"
 	}
-	target = target + filename
-	log.Printf("Run command >%s %s %s %s<\n", c.OCRMyPDFBinary, c.Parameter, path, target)
+	targetWithoutExtension := target + filename
+	target = targetWithoutExtension + ".tmp"
+	log.Printf("Run command >%s %s %s %s<\n", c.OCRMyPDFBinary, c.Parameter, tmpFile.Name(), target)
 	runargs := strings.Split(c.Parameter, " ")
-	runargs = append(runargs, path, target)
+	runargs = append(runargs, tmpFile.Name(), target)
 	cmd := exec.Command(c.OCRMyPDFBinary, runargs...)
 
 	out, err := cmd.CombinedOutput()
@@ -117,8 +127,13 @@ func (c *Context) processDocument(path string) {
 	log.Println(string(out))
 
 	log.Printf("Job finished with result %v\n", err)
-	if err := os.Remove(path); err != nil {
-		log.Printf("Error removing path %s: %v", path, err)
+	if err != nil {
+		// error: tmp back to original name
+		os.Rename(tmpFile.Name(), path)
+	} else {
+		// ok: rename tmp target to final target
+		os.Rename(target, targetWithoutExtension+".pdf")
+
 	}
 }
 
