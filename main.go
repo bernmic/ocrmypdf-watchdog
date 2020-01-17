@@ -132,6 +132,9 @@ func (c *Context) processDocument(path string) {
 		os.Rename(tmpFile.Name(), path)
 	} else {
 		// ok: rename tmp target to final target
+		for fileExists(targetWithoutExtension+".pdf") {
+			targetWithoutExtension+="_1"
+		}
 		os.Rename(target, targetWithoutExtension+".pdf")
 
 	}
@@ -145,4 +148,12 @@ func (c *Context) hasOneOfExtensions(path string) bool {
 		}
 	}
 	return false
+}
+
+func fileExists(filename string) bool {
+    info, err := os.Stat(filename)
+    if os.IsNotExist(err) {
+        return false
+    }
+    return !info.IsDir()
 }
