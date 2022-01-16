@@ -23,6 +23,8 @@ The watchdog looks for the following environment variables:
 * OCRMYPDF_PARAMETER
 * WATCHDOG_EXTENSIONS
 * WATCHDOG_FREQUENCY
+* WATCHDOG_PRESCRIPT
+* WATCHDOG_POSTSCRIPT
 
 ## Parameters
 
@@ -32,3 +34,22 @@ The watchdog accepts the following parameters:
 * --out <out-path>
 * --frequency <in seconds)
 * --ocrmypdf <path and name of the executable>
+* --prescript <name of script>
+* --postscript <name of script>
+
+## Pre- and postprocessing
+
+The watchdog allows pre- and postprocessing for each document.
+
+A preprocessing script can be copied to ```in``` folder and the name of the script must be added by the --prescript parameter or the WATCHDOG_PRESCRIPT environment variable. It will be executed for each document just before ocrmypdf is called.
+
+A postprocessing script can be copied to ```out``` folder and the name of the script must be added by the --postscript parameter or the WATCHDOG_POSTSCRIPT environment variable. It will be executed for each document after ocrmypdf is called.
+
+## Temporary parameters
+
+The watchdog allows to overwrite temporarely the commandline parameters. If a file with extension ```.properties``` is found in the ```in``` folder which contains keys and values separated through an equal sign, it will overwrite the value.
+
+### Example
+```OCRMYPDF_PARAMETER=-l eng+fra+deu --rotate-pages --deskew --jobs 4 --output-type pdfa```
+
+For now only WATCHDOG_EXTENSIONS and OCRMYPDF_PARAMETER are considered.
