@@ -53,3 +53,7 @@ The watchdog allows to overwrite temporarely the commandline parameters. If a fi
 ```OCRMYPDF_PARAMETER=-l eng+fra+deu --rotate-pages --deskew --jobs 4 --output-type pdfa```
 
 For now only WATCHDOG_EXTENSIONS and OCRMYPDF_PARAMETER are considered.
+
+## Multi architecture build
+
+```docker buildx build -t "${DOCKER_USER}/ocrmypdf-watchdog:latest" --platform linux/amd64,linux/arm64 --push .```
