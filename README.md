@@ -32,3 +32,7 @@ The watchdog accepts the following parameters:
 * --out <out-path>
 * --frequency <in seconds)
 * --ocrmypdf <path and name of the executable>
+
+## Multi architecture build
+
+docker buildx build -t "${DOCKER_USER}/ocrmypdf-watchdog:latest" --platform linux/amd64,linux/arm64 --push .
